@@ -82,7 +82,13 @@ const create = async (input) => {
     return { status_code: countryServices.status_code, message: countryServices.message };
   }
 
-  const str = { ...dto, users: usersServices._id, country: countryServices._id };
+  const str = {
+    ...dto,
+    users: usersServices._id,
+    country: countryServices._id,
+    created_at: new Date(),
+    updated_at: new Date(),
+  };
   const result = await postsCollection.insertOne(str);
   if (!result.insertedId) {
     return { status_code: 1, message: "create failure" };
@@ -112,6 +118,7 @@ const update = async (input) => {
     $set: {
       title: dto.title,
       body: dto.body,
+      updated_at: new Date(),
     },
   };
   const result = await postsCollection.updateOne(filter, updateDoc, options);
