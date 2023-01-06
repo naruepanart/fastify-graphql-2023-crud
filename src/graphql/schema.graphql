@@ -1,3 +1,5 @@
+scalar Date
+
 type Query {
   findPosts(input: MainQuery): [Posts]
   findOnePosts(input: MainQuery): Posts
@@ -22,6 +24,8 @@ type Posts {
   users: Users
   body: String
   country: Country
+  created_at: Date
+  updated_at: Date
 }
 
 input PostsInput {
