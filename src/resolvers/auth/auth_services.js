@@ -29,11 +29,11 @@ const comparePasswords = async (password, hash) => {
 
 const verifyPaseto = async (input) => {
   const schema = z.object({
-    token: z.string(),
-    key: z.string(),
+    atk: z.string(),
+    def: z.string(),
   });
   const dto = schema.parse(input);
-  const decrypt = await V4.verify(`v4.public.${dto.token}`, `k4.public.${dto.key}`, {
+  const decrypt = await V4.verify(`v4.public.${dto.atk}`, `k4.public.${dto.def}`, {
     audience: "lessfoto.com",
     issuer: "api.lessfoto.com",
   });
@@ -61,8 +61,8 @@ const register = async (input) => {
   const dto = schema.parse(input);
 
   /* Checking if the email exists in the database. */
-  const isEmail = await findOne({ email: dto.email });
-  if (isEmail._id) {
+  const isUserInfo = await findOne({ email: dto.email });
+  if (isUserInfo._id) {
     return "email is exists";
   }
 
@@ -91,12 +91,12 @@ const login = async (input) => {
   });
   const dto = schema.parse(input);
   /* Checking if the email exists in the database. */
-  const isEmail = await findOne({ email: dto.email });
-  if (isEmail.status_code === 1) {
-    return isEmail.message;
+  const isUserInfo = await findOne({ email: dto.email });
+  if (isUserInfo.status_code === 1) {
+    return isUserInfo.message;
   }
   /* Comparing the password that the user entered with the password in the database. */
-  const isPassword = await comparePasswords(dto.password, isEmail.password);
+  const isPassword = await comparePasswords(dto.password, isUserInfo.password);
   if (isPassword.status_code === 1) {
     return isPassword.message;
   }
@@ -105,8 +105,9 @@ const login = async (input) => {
     format: "paserk",
   });
   const payload = {
-    _id: isEmail._id.toString(),
-    role: dto.role,
+    _id: isUserInfo._id.toString(),
+    name: isUserInfo.name,
+    role: isUserInfo.role,
   };
   /* Generating a token. */
   const token = await V4.sign(payload, secretKey, {
@@ -115,8 +116,8 @@ const login = async (input) => {
     expiresIn: "1y",
   });
   return {
-    token: token.split(".")[2],
-    key: publicKey.split(".")[2],
+    atk: token.split(".")[2],
+    def: publicKey.split(".")[2],
   };
 };
 
@@ -222,13 +223,13 @@ const remove = async (input) => {
   return result;
 };
 
-module.exports = { login, find, findOne, findOneAndCreate, create, update, remove };
+module.exports = { verifyPaseto, login, find, findOne, findOneAndCreate, create, update, remove };
 
 /* const first = async () => {
   const Tcreate = await verifyPaseto({
-    token:
+    atk:
       "eyJfaWQiOiI2M2I4YzQ1YjdkNWUwZmNiNzYzOTZjZjIiLCJyb2xlIjpmYWxzZSwiaWF0IjoiMjAyMy0wMS0wN1QwMToyNToxMi4wNTFaIiwiZXhwIjoiMjAyNC0wMS0wN1QwNzoyNToxMi4wNTFaIiwiYXVkIjoibGVzc2ZvdG8uY29tIiwiaXNzIjoiYXBpLmxlc3Nmb3RvLmNvbSJ91NqRRuP-TerVlagSNWnJm5KyIg45A63UFSFjgE6Mvdt9sDnmfkXPXLFmUS3qtxmIDUiVIm-CUmaCBMh0dKPwAA",
-    key: "s4XiMx0BDZuUnRM_iSvD9vevbPjk899jH_soZcRvm1A",
+    def: "s4XiMx0BDZuUnRM_iSvD9vevbPjk899jH_soZcRvm1A",
   });
   console.log(Tcreate);
 }; */
@@ -238,8 +239,9 @@ module.exports = { login, find, findOne, findOneAndCreate, create, update, remov
     password: "123456",
   });
   console.log(Tcreate);
-}; */
-const first = async () => {
+};
+first(); */
+/* const first = async () => {
   const Tcreate = await register({
     name: "Alice",
     email: "abc@gmail.com",
@@ -249,4 +251,4 @@ const first = async () => {
   console.log(Tcreate);
 };
 
-first();
+first(); */
