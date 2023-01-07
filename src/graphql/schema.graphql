@@ -8,6 +8,8 @@ type Query {
 
   users(input: MainQuery): [Users]
   user(input: MainQuery): Users
+
+  me: Users @auth
 }
 
 type Mutation {
