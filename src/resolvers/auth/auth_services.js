@@ -165,6 +165,8 @@ const create = async (input) => {
     name: z.string().trim(),
     email: z.string().email(),
     password: z.string().trim(),
+    created_at: z.date(),
+    updated_at: z.date(),
   });
   const dto = schema.parse(input);
 
