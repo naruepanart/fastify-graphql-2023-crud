@@ -41,6 +41,7 @@ app.register(mercuriusAuth, {
     const def = context.auth.def;
     if (atk && def) {
       const decrypt = await verifyPaseto({ atk, def });
+      context.auth.users = decrypt;
       return decrypt;
     }
   },
