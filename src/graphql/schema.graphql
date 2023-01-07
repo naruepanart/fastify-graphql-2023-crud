@@ -44,6 +44,7 @@ type Country {
 type Users {
   _id: String
   name: String
+  email: String
 }
 
 input UsersInput {
