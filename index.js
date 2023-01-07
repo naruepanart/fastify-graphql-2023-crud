@@ -6,7 +6,7 @@ const usersQuery = require("./src/resolvers/users/query");
 const usersMutations = require("./src/resolvers/users/mutations");
 const postsMutations = require("./src/resolvers/posts/mutations");
 const postsQuery = require("./src/resolvers/posts/query");
-const { verifyPaseto } = require("./src/resolvers/auth/auth_services");
+const auth_services = require("./src/resolvers/auth/auth_services");
 const authMutations = require("./src/resolvers/auth/mutations");
 const schema = fs.readFileSync("./src/graphql/schema.graphql", "utf8");
 const app = Fastify();
@@ -40,7 +40,7 @@ app.register(mercuriusAuth, {
     const atk = context.auth.atk;
     const def = context.auth.def;
     if (atk && def) {
-      const decrypt = await verifyPaseto({ atk, def });
+      const decrypt = await auth_services.verifyPaseto({ atk, def });
       context.auth.users = decrypt;
       return decrypt;
     }
