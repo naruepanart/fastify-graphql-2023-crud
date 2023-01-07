@@ -19,8 +19,8 @@ type Mutation {
   removePosts(input: PostsInput): String @auth
 
   createUsers(input: UsersInput): String
-  updateUsers(input: UsersInput): String @auth
-  removeUsers(input: UsersInput): String @auth
+  updateUsers(input: UsersInput): String
+  removeUsers(input: UsersInput): String
 }
 
 type Login {
