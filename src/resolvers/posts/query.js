@@ -1,7 +1,7 @@
 const posts_services = require("./posts_services");
 
 const postsQuery = {
-  findPosts: async (_, args) => {
+  posts: async (_, args) => {
     const { input } = args;
     const { page = 1, limit = 10 } = input;
     const skip = (page - 1) * limit;
@@ -12,7 +12,7 @@ const postsQuery = {
     }
     return result;
   },
-  findOnePosts: async (_, args) => {
+  post: async (_, args) => {
     const { input } = args;
     const { _id } = input;
 
