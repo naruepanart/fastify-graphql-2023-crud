@@ -8,7 +8,7 @@ const postsMutations = require("./src/resolvers/posts/mutations");
 const postsQuery = require("./src/resolvers/posts/query");
 const auth_services = require("./src/resolvers/auth/auth_services");
 const authMutations = require("./src/resolvers/auth/mutations");
-const schema = fs.readFileSync("./src/graphql/schema.graphql", "utf8");
+const typeDefs = fs.readFileSync("./src/graphql/schema.graphql", "utf8");
 const app = Fastify();
 
 const resolvers = {
@@ -24,7 +24,7 @@ const resolvers = {
 };
 
 app.register(mercurius, {
-  schema,
+  typeDefs,
   resolvers,
   graphiql: true,
 });
