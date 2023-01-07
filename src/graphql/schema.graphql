@@ -12,7 +12,7 @@ type Query {
 
 type Mutation {
   register(input: RegisterInput): String
-  login(input: LoginInput): String
+  login(input: LoginInput): Login!
 
   createPosts(input: PostsInput): String @auth
   updatePosts(input: PostsInput): String @auth
@@ -21,6 +21,11 @@ type Mutation {
   createUsers(input: UsersInput): String
   updateUsers(input: UsersInput): String @auth
   removeUsers(input: UsersInput): String @auth
+}
+
+type Login {
+  atk: String
+  def: String
 }
 
 input RegisterInput {
