@@ -217,7 +217,7 @@ const remove = async (input) => {
   return result;
 };
 
-module.exports = { verifyPaseto, login, find, findOne, findOneAndCreate, create, update, remove };
+module.exports = { verifyPaseto, register, login, find, findOne, findOneAndCreate, create, update, remove };
 
 /* const first = async () => {
   const Tcreate = await verifyPaseto({
