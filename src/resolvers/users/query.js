@@ -1,7 +1,7 @@
 const users_services = require("./users_services");
 
 const usersQuery = {
-  findUsers: async (_, args) => {
+  users: async (_, args) => {
     const { input } = args;
     const { page = 1, limit = 10 } = input;
     const skip = (page - 1) * limit;
@@ -12,7 +12,7 @@ const usersQuery = {
     }
     return result;
   },
-  findOneUsers: async (_, args) => {
+  user: async (_, args) => {
     const { input } = args;
     const { _id } = input;
 
