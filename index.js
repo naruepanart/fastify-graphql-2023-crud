@@ -7,6 +7,7 @@ const usersMutations = require("./src/resolvers/users/mutations");
 const postsMutations = require("./src/resolvers/posts/mutations");
 const postsQuery = require("./src/resolvers/posts/query");
 const { verifyPaseto } = require("./src/resolvers/auth/auth_services");
+const authMutations = require("./src/resolvers/auth/mutations");
 const schema = fs.readFileSync("./src/graphql/schema.graphql", "utf8");
 const app = Fastify();
 
@@ -16,6 +17,7 @@ const resolvers = {
     ...postsQuery,
   },
   Mutation: {
+    ...authMutations,
     ...usersMutations,
     ...postsMutations,
   },
