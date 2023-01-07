@@ -3,11 +3,11 @@ scalar Date
 directive @auth on OBJECT | FIELD_DEFINITION
 
 type Query {
-  findPosts(input: MainQuery): [Posts]
-  findOnePosts(input: MainQuery): Posts
+  posts(input: MainQuery): [Posts]
+  post(input: MainQuery): Posts
 
-  findUsers(input: MainQuery): [Users]
-  findOneUsers(input: MainQuery): Users!
+  users(input: MainQuery): [Users]
+  user(input: MainQuery): Users!
 }
 
 type Mutation {
