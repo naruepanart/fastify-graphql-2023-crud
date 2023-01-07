@@ -4,13 +4,16 @@ directive @auth on OBJECT | FIELD_DEFINITION
 
 type Query {
   posts(input: MainQuery): [Posts]
-  post(input: MainQuery): Posts
+  post(input: MainQuery): Posts!
 
   users(input: MainQuery): [Users]
   user(input: MainQuery): Users!
 }
 
 type Mutation {
+  register(input: RegisterInput): String
+  login(input: LoginInput): String
+
   createPosts(input: PostsInput): String @auth
   updatePosts(input: PostsInput): String @auth
   removePosts(input: PostsInput): String @auth
@@ -18,6 +21,18 @@ type Mutation {
   createUsers(input: UsersInput): String
   updateUsers(input: UsersInput): String @auth
   removeUsers(input: UsersInput): String @auth
+}
+
+input RegisterInput {
+  name: String
+  email: String
+  password: String
+  confirm_password: String
+}
+
+input LoginInput {
+  email: String
+  password: String
 }
 
 type Posts {
