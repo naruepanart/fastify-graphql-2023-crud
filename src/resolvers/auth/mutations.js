@@ -7,7 +7,7 @@ const authMutations = {
     if (result.status_code === 1) {
       return result.message;
     }
-    return result;
+    return "Successfully register";
   },
   login: async (_, args) => {
     const { input } = args;
