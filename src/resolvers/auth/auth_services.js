@@ -7,7 +7,7 @@ const { V4 } = require("paseto");
 
 const hashingConfig = {
   parallelism: 1,
-  memoryCost: 64000,
+  memoryCost: 2048,
   timeCost: 3,
 };
 
@@ -242,9 +242,9 @@ module.exports = { login, find, findOne, findOneAndCreate, create, update, remov
 const first = async () => {
   const Tcreate = await register({
     name: "Alice",
-    email: "abc@gmail.com",
+    email: "abc1@gmail.com",
     password: "123456",
-    confirm_password: "1234567",
+    confirm_password: "123456",
   });
   console.log(Tcreate);
 };
