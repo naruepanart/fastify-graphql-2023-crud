@@ -57,7 +57,7 @@ const register = async (input) => {
   /* Checking if the email exists in the database. */
   const isUserInfo = await findOne({ email: dto.email });
   if (isUserInfo._id) {
-    return "email is exists";
+    return { status_code: 1, message: "email is exists" };
   }
 
   const str = {
@@ -71,7 +71,7 @@ const register = async (input) => {
 
   const resCreate = await create(str);
   if (resCreate.status_code === 1) {
-    return resCreate.message;
+    return { status_code: 1, message: resCreate.message };
   }
 
   return resCreate;
@@ -87,12 +87,12 @@ const login = async (input) => {
   /* Checking if the email exists in the database. */
   const isUserInfo = await findOne({ email: dto.email });
   if (isUserInfo.status_code === 1) {
-    return isUserInfo.message;
+    return { status_code: 1, message: isUserInfo.message };
   }
   /* Comparing the password that the user entered with the password in the database. */
   const isPassword = await comparePasswords(dto.password, isUserInfo.password);
   if (isPassword.status_code === 1) {
-    return isPassword.message;
+    return { status_code: 1, message: isPassword.message };
   }
   /* Generating a public key and a secret key. */
   const { publicKey, secretKey } = await V4.generateKey("public", {
