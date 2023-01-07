@@ -1,5 +1,7 @@
 scalar Date
 
+directive @auth on OBJECT | FIELD_DEFINITION
+
 type Query {
   findPosts(input: MainQuery): [Posts]
   findOnePosts(input: MainQuery): Posts
@@ -9,13 +11,13 @@ type Query {
 }
 
 type Mutation {
-  createPosts(input: PostsInput): String
-  updatePosts(input: PostsInput): String
-  removePosts(input: PostsInput): String
+  createPosts(input: PostsInput): String @auth
+  updatePosts(input: PostsInput): String @auth
+  removePosts(input: PostsInput): String @auth
 
   createUsers(input: UsersInput): String
-  updateUsers(input: UsersInput): String
-  removeUsers(input: UsersInput): String
+  updateUsers(input: UsersInput): String @auth
+  removeUsers(input: UsersInput): String @auth
 }
 
 type Posts {
