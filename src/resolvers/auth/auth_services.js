@@ -34,15 +34,9 @@ const verifyPaseto = async (input) => {
   });
   const dto = schema.parse(input);
   const decrypt = await V4.verify(`v4.public.${dto.atk}`, `k4.public.${dto.def}`, {
-    audience: "lessfoto.com",
-    issuer: "api.lessfoto.com",
+    audience: "lessfoto1.com",
+    issuer: "api.lessfoto1.com",
   });
-  if (decrypt.aud !== "lessfoto.com") {
-    return { status_code: 1, message: "audience error" };
-  }
-  if (decrypt.iss !== "api.lessfoto.com") {
-    return { status_code: 1, message: "issuer error" };
-  }
   return decrypt;
 };
 
@@ -111,8 +105,8 @@ const login = async (input) => {
   };
   /* Generating a token. */
   const token = await V4.sign(payload, secretKey, {
-    audience: "lessfoto.com",
-    issuer: "api.lessfoto.com",
+    audience: "lessfoto1.com",
+    issuer: "api.lessfoto1.com",
     expiresIn: "1y",
   });
   return {
