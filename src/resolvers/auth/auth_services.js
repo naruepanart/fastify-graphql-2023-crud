@@ -12,7 +12,7 @@ const hashingConfig = {
 };
 
 const hashPassword = async (password) => {
-  const salt = crypto.randomBytes(16);
+  const salt = crypto.randomBytes(32);
   return argon2.hash(password, {
     ...hashingConfig,
     salt,
@@ -242,7 +242,7 @@ module.exports = { login, find, findOne, findOneAndCreate, create, update, remov
 const first = async () => {
   const Tcreate = await register({
     name: "Alice",
-    email: "abc1@gmail.com",
+    email: "abc@gmail.com",
     password: "123456",
     confirm_password: "123456",
   });
