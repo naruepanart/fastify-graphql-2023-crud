@@ -101,6 +101,7 @@ const update = async (input) => {
     users: z.string(),
     title: z.string().trim(),
     body: z.string().trim(),
+    country: z.string().trim(),
   });
   const dto = schema.parse(input);
 
@@ -111,6 +112,10 @@ const update = async (input) => {
   if (usersServices.status_code === 1) {
     return { status_code: usersServices.status_code, message: usersServices.message };
   }
+  const countryServices = await country_services.findOneAndCreate({ name: dto.country });
+  if (countryServices.status_code === 1) {
+    return { status_code: countryServices.status_code, message: countryServices.message };
+  }
 
   const filter = { _id: new ObjectId(dto._id), users: usersServices._id };
   const options = { upsert: false };
@@ -118,6 +123,7 @@ const update = async (input) => {
     $set: {
       title: dto.title,
       body: dto.body,
+      country: countryServices._id,
       updated_at: new Date(),
     },
   };
