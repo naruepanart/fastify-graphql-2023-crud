@@ -24,7 +24,7 @@ const resolvers = {
 };
 
 app.register(mercurius, {
-  typeDefs,
+  schema: typeDefs,
   resolvers,
   graphiql: true,
 });
