@@ -103,13 +103,3 @@ const remove = async (input) => {
 };
 
 module.exports = { find, findOne, create, update, remove };
-
-const run = async () => {
-  const schema = {
-    _id: "63bacb84fd99098600b3c675",
-  };
-  const aa = await remove(schema);
-  console.log(aa);
-};
-
-run();
