@@ -28,8 +28,5 @@
   "devDependencies": {
     "nodemon": "^2.0.20",
     "rome": "^11.0.0"
-  },
-  "engines": {
-    "node": ">=16.0.0"
   }
 }
