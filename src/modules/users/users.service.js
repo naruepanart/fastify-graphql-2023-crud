@@ -1,6 +1,6 @@
 const { ObjectId } = require("mongodb");
 const { z } = require("zod");
-const client = require("../../config/database/mongodb");
+const mongoDBHooks = require("../../hooks/mongodb");
 
 const find = async (input) => {
   const schema = z.object({
@@ -9,10 +9,15 @@ const find = async (input) => {
   });
   const dto = schema.parse(input);
 
-  const database = client.db("abc");
-  const usersCollection = database.collection("users");
-
-  const result = await usersCollection.find({}).sort({ _id: -1 }).limit(dto.limit).skip(dto.skip).toArray();
+  const databaseDefault = {
+    dbName: "abc",
+    collectionName: "users",
+  };
+  const inputSkipLimitDTO = {
+    skip: dto.skip,
+    limit: dto.limit,
+  };
+  const result = await mongoDBHooks.find(databaseDefault, inputSkipLimitDTO);
   return result;
 };
 const findOne = async (input) => {
@@ -21,27 +26,40 @@ const findOne = async (input) => {
   });
   const dto = schema.parse(input);
 
-  const database = client.db("abc");
-  const usersCollection = database.collection("users");
-
-  const result = await usersCollection.findOne({ _id: new ObjectId(dto._id) });
-  if (!result) {
-    return { status_code: 1, message: "users not found" };
+  const databaseDefault = {
+    dbName: "abc",
+    collectionName: "users",
+  };
+  const inputId = {
+    _id: new ObjectId(dto._id),
+  };
+  const result = await mongoDBHooks.findOne(databaseDefault, inputId);
+  if (result.status_code === 1) {
+    return { status_code: result.status_code, message: result.message };
   }
   return result;
 };
 const create = async (input) => {
   const schema = z.object({
     name: z.string().trim(),
+    email: z.string().email().trim(),
+    password: z.string().trim().default("123456"),
+    is_admin: z.boolean().default(false),
+    created_at: z.date().default(new Date()),
+    updated_at: z.date().default(new Date()),
   });
   const dto = schema.parse(input);
 
-  const database = client.db("abc");
-  const usersCollection = database.collection("users");
-
-  const result = await usersCollection.insertOne(dto);
-  if (!result.insertedId) {
-    return { status_code: 1, message: "create failure" };
+  const databaseDefault = {
+    dbName: "abc",
+    collectionName: "users",
+  };
+  const inputDTO = {
+    email: dto.email,
+  };
+  const result = await mongoDBHooks.create(databaseDefault, inputDTO, dto);
+  if (result.status_code === 1) {
+    return { status_code: result.status_code, message: result.message };
   }
   return result;
 };
@@ -52,19 +70,17 @@ const update = async (input) => {
   });
   const dto = schema.parse(input);
 
-  const database = client.db("abc");
-  const usersCollection = database.collection("users");
-
-  const filter = { _id: new ObjectId(dto._id) };
-  const options = { upsert: false };
-  const updateDoc = {
-    $set: {
-      name: dto.name,
-    },
+  const databaseDefault = {
+    dbName: "abc",
+    collectionName: "users",
   };
-  const result = await usersCollection.updateOne(filter, updateDoc, options);
-  if (result.matchedCount === 0) {
-    return { status_code: 1, message: "update failure" };
+  const inputDTO = { _id: new ObjectId(dto._id) };
+  const inputEditDTO = {
+    name: dto.name,
+  };
+  const result = await mongoDBHooks.update(databaseDefault, inputDTO, inputEditDTO);
+  if (result.status_code === 1) {
+    return { status_code: result.status_code, message: result.message };
   }
   return result;
 };
@@ -74,15 +90,26 @@ const remove = async (input) => {
   });
   const dto = schema.parse(input);
 
-  const database = client.db("abc");
-  const usersCollection = database.collection("users");
-
-  const filter = { _id: new ObjectId(dto._id) };
-  const result = await usersCollection.deleteOne(filter);
-  if (result.deletedCount === 0) {
-    return { status_code: 1, message: "remove failure" };
+  const databaseDefault = {
+    dbName: "abc",
+    collectionName: "users",
+  };
+  const inputDTO = { _id: new ObjectId(dto._id) };
+  const result = await mongoDBHooks.remove(databaseDefault, inputDTO);
+  if (result.status_code === 1) {
+    return { status_code: result.status_code, message: result.message };
   }
   return result;
 };
 
 module.exports = { find, findOne, create, update, remove };
+
+const run = async () => {
+  const schema = {
+    _id: "63bacb84fd99098600b3c675",
+  };
+  const aa = await remove(schema);
+  console.log(aa);
+};
+
+run();
