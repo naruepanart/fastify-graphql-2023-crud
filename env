@@ -1,0 +1,3 @@
+NODE_ENV=production
+PORT=3000
+MONGODB_URL=mongodb+srv://JtCqGymTW0vlPTIQ:urajvwgRuh89HUOq@cluster0.vnqxc.mongodb.net/abc?retryWrites=true&w=majority
