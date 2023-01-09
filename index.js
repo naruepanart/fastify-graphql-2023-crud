@@ -41,7 +41,7 @@ const start = async () => {
   const port = process.env.PORT || 3000;
   const NODE_ENV = process.env.NODE_ENV || "development";
   try {
-    await app.listen({ port });
+    await app.listen({ port, host: "0.0.0.0" });
     console.log(`http://localhost:${port}-${NODE_ENV}`);
   } catch (err) {
     app.log.error(err);
