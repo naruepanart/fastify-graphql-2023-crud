@@ -1,4 +1,3 @@
-const { ObjectId } = require("mongodb");
 const client = require("../config/database/mongodb");
 
 /**
@@ -10,12 +9,7 @@ const client = require("../config/database/mongodb");
 const find = async (databaseDefault, inputDTO) => {
   const database = client.db(databaseDefault.dbName);
   const collection = database.collection(databaseDefault.collectionName);
-  const result = await collection
-    .find(inputDTO)
-    .sort({ _id: -1 })
-    .limit(databaseDefault.limit)
-    .skip(databaseDefault.skip)
-    .toArray();
+  const result = await collection.find({}).sort({ _id: -1 }).limit(inputDTO.limit).skip(inputDTO.skip).toArray();
   return result;
 };
 /**
@@ -34,18 +28,22 @@ const findOne = async (databaseDefault, inputDTO) => {
   return result;
 };
 /**
- * This function will find a document in the database that matches the inputDTO, and if it doesn't find
- * one, it will create a new document in the database with the inputDTO.
- * @param databaseDefault - The database name
- * @param inputDTO - The input data transfer object.
+ * It finds one document in the database, and if it doesn't exist, it creates it.
+ * @param databaseDefault - The database you want to use.
+ * @param inputFindOneDTO - This is the input object that will be used to find the document.
+ * @param inputCreateDTO - The object that will be created if the findOneAndCreate() method doesn't
+ * find anything.
  */
-const findOneAndCreate = async (databaseDefault, inputDTO) => {
+const findOneAndCreate = async (databaseDefault, inputFindOneDTO, inputCreateDTO) => {
   const database = client.db(databaseDefault.dbName);
   const collection = database.collection(databaseDefault.collectionName);
-  const result = await collection.findOne(inputDTO);
+  const result = await collection.findOne(inputFindOneDTO);
   if (!result) {
-    const res = await create(databaseDefault, inputDTO);
-    return { _id: res.insertedId };
+    const resCreate = await create(databaseDefault, inputCreateDTO);
+    if (!resCreate.insertedId) {
+      return { status_code: 1, message: `${databaseDefault.collectionName} create failure` };
+    }
+    return { _id: resCreate.insertedId };
   }
   return result;
 };
@@ -144,7 +142,7 @@ const findOneAggregatePipeline = async (databaseDefault, inputId, inputDTO) => {
   const collection = database.collection(databaseDefault.collectionName);
 
   let pipelineArray = [];
-  const pipelineMatch = [{ $match: { _id: new ObjectId(inputId._id) } }];
+  const pipelineMatch = [{ $match: { _id: inputId._id } }];
   for (const element of inputDTO) {
     const lookupArray = [
       {
@@ -161,10 +159,10 @@ const findOneAggregatePipeline = async (databaseDefault, inputId, inputDTO) => {
   }
   const pipeline = [...pipelineMatch, ...pipelineArray];
   const result = await collection.aggregate(pipeline).toArray();
-  return result;
-  /*   if (!result) {
+  if (!result[0]) {
     return { status_code: 1, message: `${databaseDefault.collectionName} not found` };
-  } */
+  }
+  return result[0];
 };
 
 module.exports = {
