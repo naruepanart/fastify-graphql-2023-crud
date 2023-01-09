@@ -7,4 +7,4 @@ FROM gcr.io/distroless/nodejs18-debian11
 COPY --from=build-env /app /app
 WORKDIR /app
 EXPOSE 3000
-CMD ["./index.js"]
+CMD ["index.js"]
