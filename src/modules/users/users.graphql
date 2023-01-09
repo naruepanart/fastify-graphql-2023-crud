@@ -1,0 +1,33 @@
+scalar Date
+
+directive @auth on OBJECT | FIELD_DEFINITION
+
+type Query {
+  users(input: MainQuery): [Users]
+  user(input: MainQuery): Users
+
+  me: Users @auth
+}
+
+type Mutation {
+  createUsers(input: UsersInput): String
+  updateUsers(input: UsersInput): String
+  removeUsers(input: UsersInput): String
+}
+
+type Users {
+  _id: String
+  name: String
+  email: String
+}
+
+input UsersInput {
+  _id: String
+  name: String
+}
+
+input MainQuery {
+  _id: String
+  limit: Int
+  page: Int
+}

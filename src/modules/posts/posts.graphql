@@ -1,0 +1,38 @@
+scalar Date
+
+directive @auth on OBJECT | FIELD_DEFINITION
+
+type Query {
+  posts(input: MainQuery): [Posts]
+  post(input: MainQuery): Posts
+}
+
+type Mutation {
+  createPosts(input: PostsInput): String @auth
+  updatePosts(input: PostsInput): String @auth
+  removePosts(input: PostsInput): String @auth
+}
+
+type Posts {
+  _id: String
+  title: String
+  users: Users
+  body: String
+  country: Country
+  created_at: Date
+  updated_at: Date
+}
+
+input PostsInput {
+  _id: String
+  users: String
+  title: String
+  body: String
+  country: String
+}
+
+input MainQuery {
+  _id: String
+  limit: Int
+  page: Int
+}

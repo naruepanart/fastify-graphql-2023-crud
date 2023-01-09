@@ -1,6 +1,6 @@
 const { ObjectId } = require("mongodb");
 const { z } = require("zod");
-const client = require("../../../database/mongodb");
+const client = require("../../config/database/mongodb");
 
 const find = async (input) => {
   const schema = z.object({
@@ -86,34 +86,3 @@ const remove = async (input) => {
 };
 
 module.exports = { find, findOne, create, update, remove };
-
-/* const find = (body) => {
-  return users_services.find(body);
-};
-const findOne = (body) => {
-  return users_services.findOne(body);
-};
-const create = (body) => {
-  return users_services.create(body);
-};
-const update = (body) => {
-  return users_services.update(body);
-};
-const remove = (body) => {
-  return users_services.remove(body);
-}; */
-
-/* async function run() {
-  const Tfind = await find({ limit: 5, skip: 0 });
-  const TfindOne = await findOne({ _id: "63b869bb79b9e3e006bd28d5" });
-  const Tcreate = await create({ name: Math.random().toString() });
-  const Tupdate = await update({
-    _id: "63b869bb79b9e3e006bd28d5",
-    name: "Alessia Rosario 101",
-  });
-  const Tremove = await remove({
-    _id: "63b869b16d0d2d17b1c74565",
-  });
-  console.log(Tremove);
-}
-run(); */

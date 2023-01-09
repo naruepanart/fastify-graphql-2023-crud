@@ -1,0 +1,25 @@
+scalar Date
+
+directive @auth on OBJECT | FIELD_DEFINITION
+
+type Mutation {
+  register(input: RegisterInput): String
+  login(input: LoginInput): Login
+}
+
+type Login {
+  atk: String
+  def: String
+}
+
+input RegisterInput {
+  name: String
+  email: String
+  password: String
+  confirm_password: String
+}
+
+input LoginInput {
+  email: String
+  password: String
+}

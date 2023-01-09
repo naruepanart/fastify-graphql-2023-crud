@@ -1,31 +1,20 @@
+require("dotenv").config();
 const Fastify = require("fastify");
+const path = require("path");
 const mercurius = require("mercurius");
-const fs = require("fs");
 const mercuriusAuth = require("mercurius-auth");
-const usersQuery = require("./src/resolvers/users/query");
-const usersMutations = require("./src/resolvers/users/mutations");
-const postsMutations = require("./src/resolvers/posts/mutations");
-const postsQuery = require("./src/resolvers/posts/query");
-const auth_services = require("./src/resolvers/auth/auth_services");
-const authMutations = require("./src/resolvers/auth/mutations");
-const typeDefs = fs.readFileSync("./src/graphql/schema.graphql", "utf8");
+const { verifyPaseto } = require("./src/modules/auth/auth.service");
+const { makeExecutableSchema } = require("@graphql-tools/schema");
+const { loadFilesSync } = require("@graphql-tools/load-files");
+const schema = makeExecutableSchema({
+  typeDefs: loadFilesSync(path.join(__dirname, "./src/modules/**/*.graphql")),
+  resolvers: loadFilesSync(path.join(__dirname, "./src/modules/**/*.resolver.{js,ts}")),
+});
+
 const app = Fastify();
 
-const resolvers = {
-  Query: {
-    ...usersQuery,
-    ...postsQuery,
-  },
-  Mutation: {
-    ...authMutations,
-    ...usersMutations,
-    ...postsMutations,
-  },
-};
-
 app.register(mercurius, {
-  schema: typeDefs,
-  resolvers,
+  schema,
   graphiql: true,
 });
 
@@ -40,7 +29,7 @@ app.register(mercuriusAuth, {
     const atk = context.auth.atk;
     const def = context.auth.def;
     if (atk && def) {
-      const decrypt = await auth_services.verifyPaseto({ atk, def });
+      const decrypt = await verifyPaseto({ atk, def });
       context.auth.users = decrypt;
       return decrypt;
     }
@@ -49,10 +38,11 @@ app.register(mercuriusAuth, {
 });
 
 const start = async () => {
-  const port = 3000;
+  const port = process.env.PORT || 3000;
+  const NODE_ENV = process.env.NODE_ENV || "development";
   try {
     await app.listen({ port });
-    console.log(`http://localhost:${port}`);
+    console.log(`http://localhost:${port}-${NODE_ENV}`);
   } catch (err) {
     app.log.error(err);
     process.exit(1);

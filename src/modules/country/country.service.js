@@ -1,6 +1,6 @@
 const { ObjectId } = require("mongodb");
 const { z } = require("zod");
-const client = require("../../../database/mongodb");
+const client = require("../../config/database/mongodb");
 
 const find = async (input) => {
   const schema = z.object({
@@ -103,10 +103,3 @@ const remove = async (input) => {
 };
 
 module.exports = { find, findOne, findOneAndCreate, create, update, remove };
-
-/* const first = async () => {
-  const Tcreate = await remove({ _id: "63b88e9865bc3cabeafcb1d3" });
-  console.log(Tcreate);
-};
-
-first(); */

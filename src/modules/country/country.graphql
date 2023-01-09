@@ -1,0 +1,4 @@
+type Country {
+  _id: String
+  name: String
+}
