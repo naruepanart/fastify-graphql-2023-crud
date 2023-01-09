@@ -48,7 +48,7 @@ const findOne = async (input) => {
     collectionName: "posts",
   };
   const inputId = {
-    _id: dto._id,
+    _id: new ObjectId(dto._id),
   };
   const inputDTO = [
     {
@@ -67,7 +67,10 @@ const findOne = async (input) => {
     },
   ];
   const result = await mongoDBHooks.findOneAggregatePipeline(databaseDefault, inputId, inputDTO);
-  return result[0];
+  if (!result) {
+    return { status_code: result.status_code, message: result.message };
+  }
+  return result;
 };
 const create = async (input) => {
   const schema = z.object({
@@ -97,7 +100,7 @@ const create = async (input) => {
   const inputCountryDTO = {
     name: dto.country,
   };
-  const resCountry = await mongoDBHooks.findOneAndCreate(countryDatabase, inputCountryDTO);
+  const resCountry = await mongoDBHooks.findOneAndCreate(countryDatabase, inputCountryDTO, inputCountryDTO);
   if (resCountry.status_code === 1) {
     return { status_code: resCountry.status_code, message: resCountry.message };
   }
@@ -148,7 +151,7 @@ const update = async (input) => {
   const inputCountryDTO = {
     name: dto.country,
   };
-  const resCountry = await mongoDBHooks.findOneAndCreate(countryDatabase, inputCountryDTO);
+  const resCountry = await mongoDBHooks.findOneAndCreate(countryDatabase, inputCountryDTO, inputCountryDTO);
   if (resCountry.status_code === 1) {
     return { status_code: resCountry.status_code, message: resCountry.message };
   }
