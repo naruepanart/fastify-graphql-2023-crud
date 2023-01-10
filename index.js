@@ -2,6 +2,7 @@ require("dotenv").config();
 const Fastify = require("fastify");
 const path = require("path");
 const cors = require("@fastify/cors");
+const compress = require("@fastify/compress");
 const mercurius = require("mercurius");
 const mercuriusAuth = require("mercurius-auth");
 const { verifyPaseto } = require("./src/modules/auth/auth.service");
@@ -14,6 +15,11 @@ const schema = makeExecutableSchema({
 
 const app = Fastify();
 app.register(cors);
+app.register(compress);
+app.register(ratelimit, {
+  max: 120,
+  timeWindow: "1 minute",
+});
 app.register(mercurius, {
   schema,
   graphiql: true,

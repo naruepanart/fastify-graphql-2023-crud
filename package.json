@@ -12,7 +12,9 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@fastify/compress": "^6.2.0",
     "@fastify/cors": "^8.2.0",
+    "@fastify/rate-limit": "^7.6.0",
     "@graphql-tools/load-files": "^6.6.1",
     "@graphql-tools/schema": "^9.0.12",
     "argon2": "^0.30.3",
