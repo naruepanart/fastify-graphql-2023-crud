@@ -3,6 +3,7 @@ const Fastify = require("fastify");
 const path = require("path");
 const cors = require("@fastify/cors");
 const compress = require("@fastify/compress");
+const ratelimit = require("@fastify/rate-limit");
 const mercurius = require("mercurius");
 const mercuriusAuth = require("mercurius-auth");
 const { verifyPaseto } = require("./src/modules/auth/auth.service");
