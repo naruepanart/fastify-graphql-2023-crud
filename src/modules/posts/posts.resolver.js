@@ -33,7 +33,7 @@ module.exports = {
       if (result.status_code === 1) {
         return result.message;
       }
-      return "Successfully inserted";
+      return result
     },
     updatePosts: async (_, args, context) => {
       const { input } = args;
@@ -43,7 +43,7 @@ module.exports = {
       if (result.status_code === 1) {
         return result.message;
       }
-      return "Successfully updated";
+      return result
     },
     removePosts: async (_, args, context) => {
       const { input } = args;

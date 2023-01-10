@@ -8,15 +8,15 @@ type Query {
 }
 
 type Mutation {
-  createPosts(input: PostsInput): String @auth
-  updatePosts(input: PostsInput): String @auth
+  createPosts(input: PostsInput): Posts @auth
+  updatePosts(input: PostsInput): Posts @auth
   removePosts(input: PostsInput): String @auth
 }
 
 type Posts {
   _id: String
-  title: String
   users: Users
+  title: String
   body: String
   country: Country
   created_at: Date
