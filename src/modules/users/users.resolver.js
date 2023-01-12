@@ -3,7 +3,7 @@ const usersService = require("./users.service");
 module.exports = {
   Query: {
     me: async (_, args, context) => {
-      const users_id = context.auth.users._id;
+      const users_id = context.auth.users.users;
       const dto = { _id: users_id };
 
       const result = await usersService.findOne(dto);
