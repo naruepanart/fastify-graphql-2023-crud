@@ -95,6 +95,7 @@ const create = async (input) => {
 
   const str = {
     ...dto,
+    users: new ObjectId(dto.users),
     country: resCountry._id,
     created_at: new Date(),
     updated_at: new Date(),
@@ -135,7 +136,7 @@ const update = async (input) => {
     dbName: "abc",
     collectionName: "posts",
   };
-  const inputDTO = { _id: new ObjectId(dto._id), users: new ObjectId(users._id) };
+  const inputDTO = { _id: new ObjectId(dto._id), users: new ObjectId(dto.users) };
   const inputEditDTO = {
     title: dto.title,
     body: dto.body,
@@ -159,7 +160,7 @@ const remove = async (input) => {
     dbName: "abc",
     collectionName: "posts",
   };
-  const inputDTO = { _id: new ObjectId(dto._id), users: new ObjectId(users._id) };
+  const inputDTO = { _id: new ObjectId(dto._id), users: new ObjectId(dto.users) };
   const result = await mongoDBHooks.remove(postsDatabase, inputDTO);
   if (result.status_code === 1) {
     return { status_code: result.status_code, message: result.message };
