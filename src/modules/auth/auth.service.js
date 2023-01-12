@@ -3,6 +3,7 @@ const argon2 = require("argon2");
 const crypto = require("crypto");
 const { V4 } = require("paseto");
 const mongoDBHooks = require("../../hooks/mongodb");
+const { ObjectId } = require("mongodb");
 
 const hashingConfig = {
   parallelism: 1,
@@ -107,30 +108,136 @@ const login = async (input) => {
   if (isUserInfo.status_code === 1) {
     return { status_code: 1, message: isUserInfo.message };
   }
+
   /* Comparing the password that the user entered with the password in the database. */
   const isPassword = await comparePasswords(dto.password, isUserInfo.password);
   if (isPassword.status_code === 1) {
     return { status_code: 1, message: isPassword.message };
   }
-  /* Generating a public key and a secret key. */
+
+  /* Creating a session. */
+  const payloadSession = {
+    users: isUserInfo._id.toString(),
+    // from UI
+    ip: "1.1.1.1",
+    country_code: "TH",
+    country_name: "Thailand",
+    city: "Chon Buri",
+    postal: "20000",
+    latitude: 13.1604,
+    longitude: 101.1083,
+    IPv4: "1.20.43.163",
+    state: "Changwat Chon Buri",
+  };
+  const resSession = await session(payloadSession);
+  if (resSession.status_code === 1) {
+    return { status_code: resSession.status_code, message: resSession.message };
+  }
+
+  /* Creating a token. */
   const { publicKey, secretKey } = await V4.generateKey("public", {
     format: "paserk",
   });
   const payload = {
-    _id: isUserInfo._id.toString(),
-    name: isUserInfo.name,
-    is_admin: isUserInfo.is_admin,
+    users: isUserInfo._id.toString(),
+    session: resSession._id.toString(),
   };
-  /* Generating a token. */
   const token = await V4.sign(payload, secretKey, {
     audience: "lessfoto1.com",
     issuer: "api.lessfoto1.com",
     expiresIn: "1y",
   });
+
   return {
     atk: token.split(".")[2],
     def: publicKey.split(".")[2],
   };
 };
 
-module.exports = { verifyPaseto, register, login };
+const session = async (input) => {
+  const schema = z.object({
+    users: z.string(),
+    ip: z.string(),
+    state: z.string(),
+    country_code: z.string(),
+    country_name: z.string(),
+    city: z.string(),
+    postal: z.string(),
+    latitude: z.number(),
+    longitude: z.number(),
+  });
+  const dto = schema.parse(input);
+
+  /* A function that will check if the ip exists in the database. If it does not exist, it will create
+  a new one. */
+  const geolocationDB = {
+    dbName: "abc",
+    collectionName: "geolocation",
+  };
+  const inputGeoLocationFindOne = {
+    users: new ObjectId(dto.users),
+    ip: dto.ip,
+  };
+  const inputGeoLocationFindOneAndCreate = {
+    users: new ObjectId(dto.users),
+    ip: dto.ip,
+    state: dto.state,
+    country_code: dto.country_code,
+    country_name: dto.country_name,
+    city: dto.city,
+    postal: dto.postal,
+    latitude: dto.latitude,
+    longitude: dto.longitude,
+  };
+  const resGeoLocation = await mongoDBHooks.findOneAndCreate(
+    geolocationDB,
+    inputGeoLocationFindOne,
+    inputGeoLocationFindOneAndCreate
+  );
+  if (resGeoLocation.status_code === 1) {
+    return { status_code: resGeoLocation.status_code, message: resGeoLocation.message };
+  }
+
+  /* Creating a session. */
+  const sessiondDB = {
+    dbName: "abc",
+    collectionName: "session",
+  };
+  const inputSessionFindOne = {
+    users: new ObjectId(dto.users),
+    geolocation: new ObjectId(resGeoLocation._id),
+  };
+  const inputSessionCreate = {
+    users: new ObjectId(dto.users),
+    geolocation: new ObjectId(resGeoLocation._id),
+    created_at: new Date(),
+  };
+  const result = await mongoDBHooks.findOneAndCreate(sessiondDB, inputSessionFindOne, inputSessionCreate);
+  if (result.status_code === 1) {
+    return { status_code: result.status_code, message: result.message };
+  }
+
+  return result;
+};
+
+const findOneSession = async (input) => {
+  const schema = z.object({
+    users: z.string(),
+  });
+  const dto = schema.parse(input);
+
+  const sessiondDB = {
+    dbName: "abc",
+    collectionName: "session",
+  };
+  const inputFindOneDTO = {
+    users: new ObjectId(dto.users),
+  };
+  const result = await mongoDBHooks.findOne(sessiondDB, inputFindOneDTO);
+  if (result.status_code === 1) {
+    return { status_code: result.status_code, message: result.message };
+  }
+  return result;
+};
+
+module.exports = { findOneSession, verifyPaseto, register, login };
