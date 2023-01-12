@@ -27,8 +27,8 @@ module.exports = {
   Mutation: {
     createPosts: async (_, args, context) => {
       const { input } = args;
-      const users_id = context.auth.users.users;
-      const dto = { ...input, users: users_id };
+      const users = context.auth.users.users;
+      const dto = { ...input, users };
       const result = await postsService.create(dto);
       if (result.status_code === 1) {
         return result.message;
@@ -37,8 +37,8 @@ module.exports = {
     },
     updatePosts: async (_, args, context) => {
       const { input } = args;
-      const users_id = context.auth.users.users;
-      const dto = { ...input, users: users_id };
+      const users = context.auth.users.users;
+      const dto = { ...input, users };
       const result = await postsService.update(dto);
       if (result.status_code === 1) {
         return result.message;
@@ -47,8 +47,8 @@ module.exports = {
     },
     removePosts: async (_, args, context) => {
       const { input } = args;
-      const users_id = context.auth.users.users;
-      const dto = { ...input, users: users_id };
+      const users = context.auth.users.users;
+      const dto = { ...input, users };
       const result = await postsService.remove(dto);
       if (result.status_code === 1) {
         return result.message;
