@@ -81,18 +81,6 @@ const create = async (input) => {
   });
   const dto = schema.parse(input);
 
-  const usersDatabase = {
-    dbName: "abc",
-    collectionName: "users",
-  };
-  const inputUsersIdDTO = {
-    _id: new ObjectId(dto.users),
-  };
-  const resUser = await mongoDBHooks.findOne(usersDatabase, inputUsersIdDTO);
-  if (resUser.status_code === 1) {
-    return { status_code: resUser.status_code, message: resUser.message };
-  }
-
   const countryDatabase = {
     dbName: "abc",
     collectionName: "country",
@@ -107,7 +95,6 @@ const create = async (input) => {
 
   const str = {
     ...dto,
-    users: resUser._id,
     country: resCountry._id,
     created_at: new Date(),
     updated_at: new Date(),
@@ -132,18 +119,6 @@ const update = async (input) => {
   });
   const dto = schema.parse(input);
 
-  const usersDatabase = {
-    dbName: "abc",
-    collectionName: "users",
-  };
-  const inputUsersIdDTO = {
-    _id: new ObjectId(dto.users),
-  };
-  const resUser = await mongoDBHooks.findOne(usersDatabase, inputUsersIdDTO);
-  if (resUser.status_code === 1) {
-    return { status_code: resUser.status_code, message: resUser.message };
-  }
-
   const countryDatabase = {
     dbName: "abc",
     collectionName: "country",
@@ -160,7 +135,7 @@ const update = async (input) => {
     dbName: "abc",
     collectionName: "posts",
   };
-  const inputDTO = { _id: new ObjectId(dto._id), users: new ObjectId(resUser._id) };
+  const inputDTO = { _id: new ObjectId(dto._id), users: new ObjectId(users._id) };
   const inputEditDTO = {
     title: dto.title,
     body: dto.body,
@@ -180,23 +155,11 @@ const remove = async (input) => {
   });
   const dto = schema.parse(input);
 
-  const usersDatabase = {
-    dbName: "abc",
-    collectionName: "users",
-  };
-  const inputUsersIdDTO = {
-    _id: new ObjectId(dto.users),
-  };
-  const resUser = await mongoDBHooks.findOne(usersDatabase, inputUsersIdDTO);
-  if (resUser.status_code === 1) {
-    return { status_code: resUser.status_code, message: resUser.message };
-  }
-
   const postsDatabase = {
     dbName: "abc",
     collectionName: "posts",
   };
-  const inputDTO = { _id: new ObjectId(dto._id), users: new ObjectId(resUser._id) };
+  const inputDTO = { _id: new ObjectId(dto._id), users: new ObjectId(users._id) };
   const result = await mongoDBHooks.remove(postsDatabase, inputDTO);
   if (result.status_code === 1) {
     return { status_code: result.status_code, message: result.message };
