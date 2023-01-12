@@ -6,7 +6,7 @@ const compress = require("@fastify/compress");
 const ratelimit = require("@fastify/rate-limit");
 const mercurius = require("mercurius");
 const mercuriusAuth = require("mercurius-auth");
-const { verifyPaseto, findOneSession } = require("./src/modules/auth/auth.service");
+const AuthService = require("./src/modules/auth/auth.service");
 const { makeExecutableSchema } = require("@graphql-tools/schema");
 const { loadFilesSync } = require("@graphql-tools/load-files");
 const schema = makeExecutableSchema({
@@ -36,13 +36,13 @@ app.register(mercuriusAuth, {
     const atk = context.auth.atk;
     const def = context.auth.def;
     if (atk && def) {
-      const decrypt = await verifyPaseto({ atk, def });
+      const decrypt = await AuthService.verifyPaseto({ atk, def });
 
       const inputID = {
         users: decrypt.users,
         session: decrypt.session,
       };
-      const resfindOneSession = await findOneSession(inputID);
+      const resfindOneSession = await AuthService.findOneSession(inputID);
       if (resfindOneSession.status_code === 1) {
         return { status_code: resfindOneSession.status_code, message: resfindOneSession.message };
       }
