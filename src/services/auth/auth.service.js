@@ -2,7 +2,7 @@ const { z } = require("zod");
 const argon2 = require("argon2");
 const crypto = require("crypto");
 const { V4 } = require("paseto");
-const mongoDBHooks = require("../../hooks/mongodb");
+const mongoDBHooks = require("../../repository/mongodb");
 const { ObjectId } = require("mongodb");
 
 const hashingConfig = {

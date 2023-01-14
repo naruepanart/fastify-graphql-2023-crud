@@ -1,6 +1,6 @@
 const { ObjectId } = require("mongodb");
 const { z } = require("zod");
-const mongoDBHooks = require("../../hooks/mongodb");
+const mongoDBHooks = require("../../repository/mongodb");
 
 const find = async (input) => {
   const schema = z.object({
