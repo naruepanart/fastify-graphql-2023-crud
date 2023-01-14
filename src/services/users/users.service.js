@@ -1,6 +1,6 @@
 const { ObjectId } = require("mongodb");
 const { z } = require("zod");
-const mongoDBHooks = require("../../repository/mongodb");
+const repositoryDB = require("../../repository/mongodb");
 
 const find = async (input) => {
   const schema = z.object({
@@ -17,7 +17,7 @@ const find = async (input) => {
     skip: dto.skip,
     limit: dto.limit,
   };
-  const result = await mongoDBHooks.find(databaseDefault, inputSkipLimitDTO);
+  const result = await repositoryDB.find(databaseDefault, inputSkipLimitDTO);
   return result;
 };
 const findOne = async (input) => {
@@ -33,7 +33,7 @@ const findOne = async (input) => {
   const inputId = {
     _id: new ObjectId(dto._id),
   };
-  const result = await mongoDBHooks.findOne(databaseDefault, inputId);
+  const result = await repositoryDB.findOne(databaseDefault, inputId);
   if (result.status_code === 1) {
     return { status_code: result.status_code, message: result.message };
   }
@@ -57,7 +57,7 @@ const create = async (input) => {
   const inputDTO = {
     email: dto.email,
   };
-  const result = await mongoDBHooks.create(databaseDefault, inputDTO, dto);
+  const result = await repositoryDB.create(databaseDefault, inputDTO, dto);
   if (result.status_code === 1) {
     return { status_code: result.status_code, message: result.message };
   }
@@ -78,7 +78,7 @@ const update = async (input) => {
   const inputEditDTO = {
     name: dto.name,
   };
-  const result = await mongoDBHooks.update(databaseDefault, inputDTO, inputEditDTO);
+  const result = await repositoryDB.update(databaseDefault, inputDTO, inputEditDTO);
   if (result.status_code === 1) {
     return { status_code: result.status_code, message: result.message };
   }
@@ -95,7 +95,7 @@ const remove = async (input) => {
     collectionName: "users",
   };
   const inputDTO = { _id: new ObjectId(dto._id) };
-  const result = await mongoDBHooks.remove(databaseDefault, inputDTO);
+  const result = await repositoryDB.remove(databaseDefault, inputDTO);
   if (result.status_code === 1) {
     return { status_code: result.status_code, message: result.message };
   }

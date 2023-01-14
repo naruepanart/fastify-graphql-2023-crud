@@ -1,6 +1,6 @@
 const { ObjectId } = require("mongodb");
 const { z } = require("zod");
-const mongoDBHooks = require("../../repository/mongodb");
+const repositoryDB = require("../../repository/mongodb");
 
 const find = async (input) => {
   const schema = z.object({
@@ -34,7 +34,7 @@ const find = async (input) => {
       lookupUnWind: "$country",
     },
   ];
-  const result = await mongoDBHooks.findAggregatePipeline(databaseDefault, inputSkipLimitDTO, inputDTO);
+  const result = await repositoryDB.findAggregatePipeline(databaseDefault, inputSkipLimitDTO, inputDTO);
   return result;
 };
 const findOne = async (input) => {
@@ -66,7 +66,7 @@ const findOne = async (input) => {
       lookupUnWind: "$country",
     },
   ];
-  const result = await mongoDBHooks.findOneAggregatePipeline(databaseDefault, inputId, inputDTO);
+  const result = await repositoryDB.findOneAggregatePipeline(databaseDefault, inputId, inputDTO);
   if (!result) {
     return { status_code: result.status_code, message: result.message };
   }
@@ -88,7 +88,7 @@ const create = async (input) => {
   const inputCountryDTO = {
     name: dto.country,
   };
-  const resCountry = await mongoDBHooks.findOneAndCreate(countryDatabase, inputCountryDTO, inputCountryDTO);
+  const resCountry = await repositoryDB.findOneAndCreate(countryDatabase, inputCountryDTO, inputCountryDTO);
   if (resCountry.status_code === 1) {
     return { status_code: resCountry.status_code, message: resCountry.message };
   }
@@ -104,7 +104,7 @@ const create = async (input) => {
     dbName: "abc",
     collectionName: "posts",
   };
-  const result = await mongoDBHooks.create(postsDatabase, str);
+  const result = await repositoryDB.create(postsDatabase, str);
   if (result.status_code === 1) {
     return { status_code: result.status_code, message: result.message };
   }
@@ -127,7 +127,7 @@ const update = async (input) => {
   const inputCountryDTO = {
     name: dto.country,
   };
-  const resCountry = await mongoDBHooks.findOneAndCreate(countryDatabase, inputCountryDTO, inputCountryDTO);
+  const resCountry = await repositoryDB.findOneAndCreate(countryDatabase, inputCountryDTO, inputCountryDTO);
   if (resCountry.status_code === 1) {
     return { status_code: resCountry.status_code, message: resCountry.message };
   }
@@ -143,7 +143,7 @@ const update = async (input) => {
     country: resCountry._id,
     updated_at: new Date(),
   };
-  const result = await mongoDBHooks.update(postsDatabase, inputDTO, inputEditDTO);
+  const result = await repositoryDB.update(postsDatabase, inputDTO, inputEditDTO);
   if (result.status_code === 1) {
     return { status_code: result.status_code, message: result.message };
   }
@@ -161,7 +161,7 @@ const remove = async (input) => {
     collectionName: "posts",
   };
   const inputDTO = { _id: new ObjectId(dto._id), users: new ObjectId(dto.users) };
-  const result = await mongoDBHooks.remove(postsDatabase, inputDTO);
+  const result = await repositoryDB.remove(postsDatabase, inputDTO);
   if (result.status_code === 1) {
     return { status_code: result.status_code, message: result.message };
   }

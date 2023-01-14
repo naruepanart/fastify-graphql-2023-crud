@@ -2,7 +2,7 @@ const { z } = require("zod");
 const argon2 = require("argon2");
 const crypto = require("crypto");
 const { V4 } = require("paseto");
-const mongoDBHooks = require("../../repository/mongodb");
+const repositoryDB = require("../../repository/mongodb");
 const { ObjectId } = require("mongodb");
 
 const hashingConfig = {
@@ -63,7 +63,7 @@ const register = async (input) => {
   const inputDTO = {
     email: dto.email,
   };
-  const isUserInfo = await mongoDBHooks.findOne(databaseDefault, inputDTO);
+  const isUserInfo = await repositoryDB.findOne(databaseDefault, inputDTO);
   if (isUserInfo._id) {
     return { status_code: 1, message: "email is exists" };
   }
@@ -81,7 +81,7 @@ const register = async (input) => {
     created_at: new Date(),
     updated_at: new Date(),
   };
-  const resCreate = await mongoDBHooks.create(databaseDefault2, inputDTO2);
+  const resCreate = await repositoryDB.create(databaseDefault2, inputDTO2);
   if (resCreate.status_code === 1) {
     return { status_code: 1, message: resCreate.message };
   }
@@ -103,7 +103,7 @@ const login = async (input) => {
     email: dto.email,
   };
   /* Checking if the email exists in the database. */
-  const isUserInfo = await mongoDBHooks.findOne(databaseDefault, inputDTO);
+  const isUserInfo = await repositoryDB.findOne(databaseDefault, inputDTO);
   if (isUserInfo.status_code === 1) {
     return { status_code: 1, message: isUserInfo.message };
   }
@@ -136,7 +136,7 @@ const login = async (input) => {
     IPv4: "1.20.43.163",
     state: "Changwat Chon Buri",
   };
-  const resGeoLocation = await mongoDBHooks.findOneAndCreate(
+  const resGeoLocation = await repositoryDB.findOneAndCreate(
     geolocationDB,
     inputGeoLocationFindOne,
     payloadGeoLocation
@@ -159,7 +159,7 @@ const login = async (input) => {
     geolocation: new ObjectId(resGeoLocation._id),
     created_at: new Date(),
   };
-  const resSession = await mongoDBHooks.findOneAndCreate(sessiondDB, inputSessionFindOne, inputSessionCreate);
+  const resSession = await repositoryDB.findOneAndCreate(sessiondDB, inputSessionFindOne, inputSessionCreate);
   if (resSession.status_code === 1) {
     return { status_code: resSession.status_code, message: resSession.message };
   }
@@ -197,7 +197,7 @@ const findOneSession = async (input) => {
   const inputFindOneDTO = {
     users: new ObjectId(dto.users),
   };
-  const result = await mongoDBHooks.findOne(sessiondDB, inputFindOneDTO);
+  const result = await repositoryDB.findOne(sessiondDB, inputFindOneDTO);
   if (result.status_code === 1) {
     return { status_code: result.status_code, message: result.message };
   }
