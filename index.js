@@ -6,13 +6,14 @@ const compress = require("@fastify/compress");
 const ratelimit = require("@fastify/rate-limit");
 const mercurius = require("mercurius");
 const mercuriusAuth = require("mercurius-auth");
-const AuthService = require("./src/modules/auth/auth.service");
+const AuthService = require("./src/services/auth/auth.service");
 const { makeExecutableSchema } = require("@graphql-tools/schema");
 const { loadFilesSync } = require("@graphql-tools/load-files");
 const schema = makeExecutableSchema({
-  typeDefs: loadFilesSync(path.join(__dirname, "./src/modules/**/*.graphql")),
-  resolvers: loadFilesSync(path.join(__dirname, "./src/modules/**/*.resolver.{js,ts}")),
+  typeDefs: loadFilesSync(path.join(__dirname, "./src/services/**/*.graphql")),
+  resolvers: loadFilesSync(path.join(__dirname, "./src/services/**/*.resolver.{js,ts}")),
 });
+const cache = require("mercurius-cache");
 
 const app = Fastify({ logger: false });
 app.register(cors);
@@ -24,6 +25,16 @@ app.register(ratelimit, {
 app.register(mercurius, {
   schema,
   graphiql: true,
+  validationRules: [graphql.NoSchemaIntrospectionCustomRule],
+});
+app.register(cache, {
+  ttl: 30,
+  policy: {
+    Query: {
+      posts: true,
+      post: true,
+    },
+  },
 });
 app.register(mercuriusAuth, {
   authContext(context) {
