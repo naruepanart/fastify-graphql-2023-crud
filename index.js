@@ -28,7 +28,7 @@ app.register(mercurius, {
   graphiql: true,
   validationRules: [graphql.NoSchemaIntrospectionCustomRule],
 });
-app.register(cache, {
+/* app.register(cache, {
   ttl: 30,
   policy: {
     Query: {
@@ -42,7 +42,7 @@ app.register(cache, {
   onMiss: function (type, fieldName) {
     app.log.info({ msg: "miss from cache", type, fieldName });
   },
-});
+}); */
 app.register(mercuriusAuth, {
   authContext(context) {
     return {
