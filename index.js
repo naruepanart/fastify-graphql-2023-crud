@@ -14,6 +14,7 @@ const schema = makeExecutableSchema({
   resolvers: loadFilesSync(path.join(__dirname, "./src/services/**/*.resolver.{js,ts}")),
 });
 const cache = require("mercurius-cache");
+const graphql = require("graphql");
 
 const app = Fastify({ logger: false });
 app.register(cors);
