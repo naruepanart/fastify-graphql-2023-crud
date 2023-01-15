@@ -16,7 +16,7 @@ const schema = makeExecutableSchema({
 const cache = require("mercurius-cache");
 const graphql = require("graphql");
 
-const app = Fastify({ logger: false });
+const app = Fastify({ logger: true });
 app.register(cors);
 app.register(compress);
 app.register(ratelimit, {
@@ -35,6 +35,12 @@ app.register(cache, {
       posts: true,
       post: true,
     },
+  },
+  onHit: function (type, fieldName) {
+    app.log.info({ msg: "hit from cache", type, fieldName });
+  },
+  onMiss: function (type, fieldName) {
+    app.log.info({ msg: "miss from cache", type, fieldName });
   },
 });
 app.register(mercuriusAuth, {
