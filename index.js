@@ -25,6 +25,7 @@ app.register(ratelimit, {
 });
 app.register(mercurius, {
   schema,
+  jit: 1,
   graphiql: true,
   validationRules: [graphql.NoSchemaIntrospectionCustomRule],
 });
