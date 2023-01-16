@@ -15,21 +15,6 @@ const find = async (input) => {
   const result = await imageCollection.find().sort({ _id: -1 }).limit(dto.limit).skip(dto.skip).toArray();
   return result;
 };
-const findOne = async (input) => {
-  const schema = z.object({
-    name: z.string(),
-  });
-  const dto = schema.parse(input);
-
-  const database = client.db("abc");
-  const imageCollection = database.collection("image");
-
-  const result = await imageCollection.findOne(dto);
-  if (!result) {
-    return { status_code: 1, message: "image not found" };
-  }
-  return result;
-};
 const create = async (input) => {
   const schema = z.array(
     z.object({
@@ -74,29 +59,6 @@ const create = async (input) => {
   const result = await imageCollection.insertMany(imagesArray, options);
   if (!result.insertedCount) {
     return { status_code: 1, message: "create failure" };
-  }
-  return result;
-};
-const update = async (input) => {
-  const schema = z.object({
-    _id: z.string(),
-    name: z.string().trim(),
-  });
-  const dto = schema.parse(input);
-
-  const database = client.db("abc");
-  const imageCollection = database.collection("image");
-
-  const filter = { _id: new ObjectId(dto._id) };
-  const options = { upsert: false };
-  const updateDoc = {
-    $set: {
-      name: dto.name,
-    },
-  };
-  const result = await imageCollection.updateOne(filter, updateDoc, options);
-  if (result.matchedCount === 0) {
-    return { status_code: 1, message: "update failure" };
   }
   return result;
 };
