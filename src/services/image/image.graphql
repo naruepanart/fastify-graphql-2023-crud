@@ -1,0 +1,36 @@
+type Mutation {
+  create(input: ImageInput): [Image]
+}
+
+type Image {
+  _id: String
+  id: String
+  title: String
+  url_viewer: String
+  url: String
+  display_url: String
+  width: Int
+  height: Int
+  size: Int
+  time: Int
+  expiration: Int
+  image: String
+  thumb: String
+  delete_url: String
+}
+
+input ImageInput {
+  id: String
+  title: String
+  url_viewer: String
+  url: String
+  display_url: String
+  width: Int
+  height: Int
+  size: Int
+  time: Int
+  expiration: Int
+  image: String
+  thumb: String
+  delete_url: String
+}
