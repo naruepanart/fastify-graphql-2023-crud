@@ -27,12 +27,13 @@ app.register(mercurius, {
   schema,
   jit: 1,
   graphiql: true,
-  validationRules: [graphql.NoSchemaIntrospectionCustomRule],
+  /* validationRules: [graphql.NoSchemaIntrospectionCustomRule], */
 });
 /* app.register(cache, {
   ttl: 30,
   policy: {
     Query: {
+      searchPosts: true,
       posts: true,
       post: true,
     },

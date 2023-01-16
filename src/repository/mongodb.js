@@ -1,6 +1,25 @@
 const client = require("../config/database/mongodb");
 
 /**
+ * It searches the database for the inputDTO and returns the projection.
+ * @param databaseDefault - The database to search in.
+ * @param inputDTO - This is the input object that will be used to search the database.
+ * @param projection - The fields you want to return.
+ */
+const search = async (databaseDefault, inputDTO, projection) => {
+  const database = client.db(databaseDefault.dbName);
+  const collection = database.collection(databaseDefault.collectionName);
+  //collection.createIndex({ title: "text" });
+  //const regexSearch = new RegExp(inputDTO, "gmiu");
+  const result = await collection
+    .find({ $text: { $search: inputDTO } })
+    .project(projection)
+    .limit(10)
+    .sort({ score: { $meta: "textScore" } })
+    .toArray();
+  return result;
+};
+/**
  * This function will find a document in the database.
  * @param databaseDefault - This is the default database connection that you have set up in your
  * config/database.js file.
@@ -166,6 +185,7 @@ const findOneAggregatePipeline = async (databaseDefault, inputId, inputDTO) => {
 };
 
 module.exports = {
+  search,
   find,
   findOne,
   findOneAndCreate,

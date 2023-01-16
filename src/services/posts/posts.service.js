@@ -2,6 +2,25 @@ const { ObjectId } = require("mongodb");
 const { z } = require("zod");
 const repositoryDB = require("../../repository/mongodb");
 
+const search = async (input) => {
+  const schema = z.object({
+    text: z.string(),
+  });
+  const dto = schema.parse(input);
+
+  const databaseDefault = {
+    dbName: "abc",
+    collectionName: "posts",
+  };
+  const projection = {
+    _id: 0,
+    title: 1,
+    score: { $meta: "textScore" },
+  };
+  const result = await repositoryDB.search(databaseDefault, dto.text, projection);
+  return result;
+};
+
 const find = async (input) => {
   const schema = z.object({
     limit: z.number().max(10).default(10),
@@ -168,4 +187,4 @@ const remove = async (input) => {
   return result;
 };
 
-module.exports = { find, findOne, create, update, remove };
+module.exports = { search, find, findOne, create, update, remove };

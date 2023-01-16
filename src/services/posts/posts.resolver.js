@@ -2,6 +2,15 @@ const postsService = require("./posts.service");
 
 module.exports = {
   Query: {
+    searchPosts: async (_, args) => {
+      const { input } = args;
+      const { text } = input;
+      const result = await postsService.search({ text });
+      if (result.status_code === 1) {
+        return result.message;
+      }
+      return result;
+    },
     posts: async (_, args) => {
       const { input } = args;
       const { page = 1, limit = 10 } = input;

@@ -3,6 +3,7 @@ scalar Date
 directive @auth on OBJECT | FIELD_DEFINITION
 
 type Query {
+  searchPosts(input: TextQuery): [Posts]
   posts(input: MainQuery): [Posts]
   post(input: MainQuery): Posts
 }
@@ -21,6 +22,7 @@ type Posts {
   country: Country
   created_at: Date
   updated_at: Date
+  score: Float
 }
 
 input PostsInput {
@@ -35,4 +37,8 @@ input MainQuery {
   _id: String
   limit: Int
   page: Int
+}
+
+input TextQuery {
+  text: String
 }
