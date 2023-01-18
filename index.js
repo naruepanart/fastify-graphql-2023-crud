@@ -58,6 +58,7 @@ app.register(mercuriusAuth, {
     if (atk && def) {
       const decrypt = await AuthService.verifyPaseto({ atk, def });
 
+      /* Checking if the session is still valid. */
       const inputID = {
         users: decrypt.users,
         session: decrypt.session,
