@@ -79,4 +79,4 @@ const remove = async (input) => {
   return result;
 };
 
-module.exports = { find, findOne, create, update, remove };
+module.exports = { find, create, remove };
