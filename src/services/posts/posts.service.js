@@ -13,7 +13,7 @@ const search = async (input) => {
     collectionName: "posts",
   };
   const projection = {
-    _id: 0,
+    _id: 1,
     title: 1,
     score: { $meta: "textScore" },
   };
